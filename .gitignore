@@ -1,2 +1,5 @@
-a.out
-a.exe
+*/*
+!*.md
+!examples/main.c
+!include/*.h
+!lib/*.c

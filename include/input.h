@@ -5,15 +5,9 @@
 #include <stdbool.h>
 #include <stddef.h>
 
-// macro funzione file
-
 #define f_in(f) in(f, NULL)
 
-// macro funzione stringa
-
 #define s_in(s, ...) in(NULL, s, ##__VA_ARGS__)
-
-// macro funzione booleano
 
 #define b_in(s, ...)                                 \
     ({                                               \
@@ -21,11 +15,7 @@
         b == 'y' || b == 'Y';                        \
     })
 
-// tipo stringa
-
 typedef char *str;
-
-// prototipi delle funzioni
 
 bool v_str(const str, str);
 str ln(const str);
@@ -37,7 +27,7 @@ void f_repeat(const str, const char, const size_t, const bool);
 void c_config(void);
 str f_replace(const str, const char, const char);
 str in(const str, str, ...);
-int sel_in(const size_t, str, str, ...);
+size_t sel_in(const size_t, str, str, ...);
 char c(const str);
 int i(const str);
 long l(const str);
