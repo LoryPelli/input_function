@@ -1,7 +1,6 @@
 #ifndef INPUT_H
 #define INPUT_H
 
-#include <stdarg.h>
 #include <stdbool.h>
 #include <stddef.h>
 
@@ -17,22 +16,22 @@
 
 typedef char *str;
 
-bool v_str(const str, str);
-str ln(const str);
-size_t len(const str);
-void c_str(str, const size_t, const char);
-void f_cat(const str, const size_t, const char, str, ...);
-void f_cpy(const str, str);
-void f_repeat(const str, const char, const size_t, const bool);
+bool v_str(str, str);
+str ln(str);
+size_t len(str);
+void c_str(str, size_t, char);
+void f_cat(str, size_t, char, str, ...);
+void f_cpy(str, str);
+void f_repeat(str, char, size_t, bool);
 void c_config(void);
-str f_replace(const str, const char, const char);
-str in(const str, str, ...);
-size_t sel_in(const size_t, str, str, ...);
-char c(const str);
-int i(const str);
-long l(const str);
-long long ll(const str);
-float f(const str);
-double d(const str);
+str f_replace(str, char, char);
+str in(str, str, ...);
+size_t sel_in(size_t, str, str, ...);
+char c(str);
+int i(str);
+long l(str);
+long long ll(str);
+float f(str);
+double d(str);
 
 #endif /* INPUT_H */

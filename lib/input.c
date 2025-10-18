@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdarg.h>
 
 #include "input.h"
 
@@ -29,7 +30,7 @@ static str string = NULL;
 
 static size_t position = 0;
 
-static str input(const str fname, str m, va_list args) {
+static str input(const str fname, str m, const va_list args) {
     FILE *f = fopen(fname, "r");
     if (m && f) {
         #ifndef SUPPRESS_WARNINGS
@@ -52,7 +53,7 @@ static str input(const str fname, str m, va_list args) {
         vprintf(m, args);
     }
     size_t buffer_size = 4;
-    str buffer = (str)malloc(sizeof(char) * buffer_size);
+    str buffer = malloc(sizeof(char) * buffer_size);
     if (!buffer) {
         fprintf(stderr, "Buffer is NULL\n");
         free(buffer);
@@ -65,7 +66,7 @@ static str input(const str fname, str m, va_list args) {
         buffer[i] = c;
         if (i >= buffer_size - 1) {
             buffer_size *= 2;
-            str temp_buffer = (str)realloc(buffer, sizeof(char) * buffer_size);
+            const str temp_buffer = realloc(buffer, sizeof(char) * buffer_size);
             if (!temp_buffer) {
                 fprintf(stderr, "Buffer is NULL\n");
                 free(buffer);
@@ -96,16 +97,22 @@ bool v_str(const str v, str m) {
         m = "Enter Something: ";
     }
     str s = s_in(m);
-    size_t l = len(s);
+    const size_t l = len(s);
     if (l <= 0) {
         fprintf(stderr, "Length is zero or less than zero\n");
+        free(s);
+        s = NULL;
         return false;
     }
     for (size_t i = 0; i < l; i++) {
         if (s[i] != v[i]) {
+            free(s);
+            s = NULL;
             return false;
         }
     }
+    free(s);
+    s = NULL;
     return true;
 }
 
@@ -122,7 +129,7 @@ str ln(const str s) {
         position = 0;
     }
     size_t buffer_size = 4;
-    str buffer = (str)malloc(sizeof(char) * buffer_size);
+    str buffer = malloc(sizeof(char) * buffer_size);
     if (!buffer) {
         fprintf(stderr, "Buffer is NULL\n");
         free(buffer);
@@ -134,7 +141,7 @@ str ln(const str s) {
         buffer[i] = s[i + position];
         if (i >= buffer_size - 1) {
             buffer_size *= 2;
-            str temp_buffer = (str)realloc(buffer, sizeof(char) * buffer_size);
+            const str temp_buffer = realloc(buffer, sizeof(char) * buffer_size);
             if (!temp_buffer) {
                 fprintf(stderr, "Buffer is NULL\n");
                 free(buffer);
@@ -157,11 +164,11 @@ str ln(const str s) {
 
 size_t len(const str s) {
     size_t i;
-    for (i = 0; s[i]; i++);
+    for (i = 0; s[i]; i++) {}
     return i;
 }
 
-void c_str(str s, const size_t p, const char c) {
+void c_str(const str s, const size_t p, const char c) {
     if (!s) {
         fprintf(stderr, "String is NULL\n");
         return;
@@ -171,11 +178,11 @@ void c_str(str s, const size_t p, const char c) {
 
 void f_cat(const str cname, const size_t n, const char sep, str fname, ...) {
     va_list args;
-    va_start(args, fname);
     if (!fname) {
         fprintf(stderr, "File name is NULL\n");
         return;
     }
+    va_start(args, fname);
     FILE *f = fopen(fname, "r");
     if (!f) {
         fprintf(stderr, "File is NULL\n");
@@ -183,7 +190,7 @@ void f_cat(const str cname, const size_t n, const char sep, str fname, ...) {
     }
     size_t j = 0;
     size_t buffer_size = 4;
-    str buffer = (str)malloc(sizeof(char) * buffer_size);
+    str buffer = malloc(sizeof(char) * buffer_size);
     if (!buffer) {
         fprintf(stderr, "Buffer is NULL\n");
         free(buffer);
@@ -191,11 +198,11 @@ void f_cat(const str cname, const size_t n, const char sep, str fname, ...) {
         return;
     }
     for (size_t i = 0; j < n; i++) {
-        int c = fgetc(f);
+        const int c = fgetc(f);
         buffer[i] = c != EOF ? c : j < n - 1 ? sep : '\0';
         if (i >= buffer_size - 1) {
             buffer_size *= 2;
-            str temp_buffer = (str)realloc(buffer, sizeof(char) * buffer_size);
+            const str temp_buffer = realloc(buffer, sizeof(char) * buffer_size);
             if (!temp_buffer) {
                 fprintf(stderr, "Buffer is NULL\n");
                 free(buffer);
@@ -210,6 +217,8 @@ void f_cat(const str cname, const size_t n, const char sep, str fname, ...) {
             f = fopen(fname, "r");
             if (!f && j < n - 1) {
                 fprintf(stderr, "File is NULL\n");
+                free(buffer);
+                buffer = NULL;
                 return;
             }
             j++;
@@ -218,6 +227,8 @@ void f_cat(const str cname, const size_t n, const char sep, str fname, ...) {
     FILE *out = fopen(cname, "w");
     if (!out) {
         fprintf(stderr, "File is NULL\n");
+        free(buffer);
+        buffer = NULL;
         return;
     }
     fputs(buffer, out);
@@ -227,7 +238,7 @@ void f_cat(const str cname, const size_t n, const char sep, str fname, ...) {
     buffer = NULL;
 }
 
-void f_cpy(const str src, str dest) {
+void f_cpy(const str src, const str dest) {
     FILE *in = fopen(src, "r");
     if (!in) {
         fprintf(stderr, "File is NULL\n");
@@ -239,7 +250,7 @@ void f_cpy(const str src, str dest) {
         return;
     }
     while (!feof(in)) {
-        int c = fgetc(in);
+        const int c = fgetc(in);
         if (c != EOF) {
             fputc(c, out);
         }
@@ -289,7 +300,7 @@ str f_replace(const str fname, const char c, const char r) {
     }
     int d = fgetc(f);
     size_t buffer_size = 4;
-    str buffer = (str)malloc(sizeof(char) * buffer_size);
+    str buffer = malloc(sizeof(char) * buffer_size);
     if (!buffer) {
         fprintf(stderr, "Buffer is NULL\n");
         free(buffer);
@@ -305,7 +316,7 @@ str f_replace(const str fname, const char c, const char r) {
         }
         if (i >= buffer_size - 1) {
             buffer_size *= 2;
-            str temp_buffer = (str)realloc(buffer, sizeof(char) * buffer_size);
+            const str temp_buffer = realloc(buffer, sizeof(char) * buffer_size);
             if (!temp_buffer) {
                 fprintf(stderr, "Buffer is NULL\n");
                 free(buffer);
@@ -321,21 +332,21 @@ str f_replace(const str fname, const char c, const char r) {
     return buffer;
 }
 
-str in(const str fname, str s, ...) {
+str in(const str fname, const str s, ...) {
     va_list args;
     va_start(args, s);
-    str res = input(fname, s, args);
+    const str res = input(fname, s, args);
     va_end(args);
     return res;
 }
 
 size_t sel_in(const size_t n, str m, str s, ...) {
     va_list args;
-    va_start(args, s);
     if (!s) {
         fprintf(stderr, "String is NULL\n");
         return 0;
     }
+    va_start(args, s);
     if (!m) {
         #ifndef SUPPRESS_WARNINGS
         printf("Message is NULL, default one will be used instead\n");
@@ -363,7 +374,7 @@ char c(str s) {
         fprintf(stderr, "String is NULL\n");
         return '\0';
     }
-    char res = s[0];
+    const char res = s[0];
     free(s);
     s = NULL;
     return res;
@@ -374,7 +385,7 @@ int i(str s) {
         fprintf(stderr, "String is NULL\n");
         return 0;
     }
-    int res = atoi(s);
+    const int res = atoi(s);
     free(s);
     s = NULL;
     return res;
@@ -385,7 +396,7 @@ long l(str s) {
         fprintf(stderr, "String is NULL\n");
         return 0;
     }
-    long res = atol(s);
+    const long res = atol(s);
     free(s);
     s = NULL;
     return res;
@@ -396,7 +407,7 @@ long long ll(str s) {
         fprintf(stderr, "String is NULL\n");
         return 0;
     }
-    long long res = atoll(s);
+    const long long res = atoll(s);
     free(s);
     s = NULL;
     return res;
@@ -407,7 +418,7 @@ float f(str s) {
         fprintf(stderr, "String is NULL\n");
         return 0;
     }
-    float res = atof(s);
+    const float res = (float)atof(s);
     free(s);
     s = NULL;
     return res;
@@ -418,7 +429,7 @@ double d(str s) {
         fprintf(stderr, "String is NULL\n");
         return 0;
     }
-    double res = atof(s);
+    const double res = atof(s);
     free(s);
     s = NULL;
     return res;

@@ -4,28 +4,28 @@
 
 int main(void) {
     c_config();
-    str string = s_in("Inserisci una stringa: ");
+    const str string = s_in("Inserisci una stringa: ");
     printf("%s\n", string);
     printf("Length: %zu\n", len(string));
-    char character = c(s_in("Inserisci un carattere: "));
+    const char character = c(s_in("Inserisci un carattere: "));
     printf("%c\n", character);
-    int integer_number = i(s_in("Inserisci un numero (intero): "));
+    const int integer_number = i(s_in("Inserisci un numero (intero): "));
     printf("%d\n", integer_number);
-    float floating_number = f(s_in("Inserisci un numero (decimale): "));
+    const float floating_number = f(s_in("Inserisci un numero (decimale): "));
     printf("%f\n", floating_number);
-    double double_number = d(s_in("Inserisci un numero (decimale doppio): "));
+    const double double_number = d(s_in("Inserisci un numero (decimale doppio): "));
     printf("%lf\n", double_number);
-    long long_number = l(s_in("Inserisci un numero (intero lungo): "));
+    const long long_number = l(s_in("Inserisci un numero (intero lungo): "));
     printf("%ld\n", long_number);
-    long long long_long_number = ll(s_in("Inserisci un numero (intero lungo lungo): "));
+    const long long long_long_number = ll(s_in("Inserisci un numero (intero lungo lungo): "));
     printf("%lld\n", long_long_number);
-    bool valid = v_str("Test di validazione!", NULL);
+    const bool valid = v_str("Test di validazione!", NULL);
     if (valid) {
         printf("Validazione passata!\n");
     } else {
         printf("Validazione non passata\n");
     }
-    bool valid2 = v_str("Test di validazione!", "Messaggio personalizzato: ");
+    const bool valid2 = v_str("Test di validazione!", "Messaggio personalizzato: ");
     if (valid2) {
         printf("Validazione passata!\n");
     } else {
@@ -34,9 +34,9 @@ int main(void) {
     str file_string = f_in("test.txt");
     printf("%s\n", file_string);
     printf("Length: %zu\n", len(file_string));
-    char file_character = c(file_string);
+    const char file_character = c(file_string);
     printf("%c\n", file_character);
-    int p = i(s_in("Inserisci la posizione del carattere: "));
+    const int p = i(s_in("Inserisci la posizione del carattere: "));
     char r = c(s_in("Inserisci il carattere da rimpiazzare: "));
     c_str(string, p, r);
     printf("%s\n", string);
@@ -58,10 +58,10 @@ int main(void) {
     r = c(s_in("Inserisci il carattere da ripetere: "));
     n = i(s_in("Inserisci quante volte ripeterlo: "));
     f_repeat("repeat.txt", r, n, false);
-    str new_content = f_replace("replace.txt", '!', '.');
+    const str new_content = f_replace("replace.txt", '!', '.');
     printf("%s\n", new_content);
-    bool b = b_in("Sei sicuro? ");
-    if (b) {
+    bool bl = b_in("Sei sicuro? ");
+    if (bl) {
         printf("L'utente ha risposto di sì\n");
     } else {
         printf("L'utente ha risposto di no\n");
@@ -69,8 +69,8 @@ int main(void) {
     n = i(s_in("Inserisci la lunghezza dell'array: "));
     str str_arr[n];
     for (int j = 0; j < n; j++) {
-        b = b_in("Vuoi inserire l'elemento %d? ", j + 1);
-        if (b) {
+        bl = b_in("Vuoi inserire l'elemento %d? ", j + 1);
+        if (bl) {
             str_arr[j] = s_in("Inserisci l'elemento %d: ", j + 1);
         } else {
             str_arr[j] = "";
