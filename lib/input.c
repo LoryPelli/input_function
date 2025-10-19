@@ -137,7 +137,7 @@ str ln(const str s) {
         return "";
     }
     size_t i = 0;
-    for (i = 0; s[i + position] != '\n' && s[i + position]; i++) {
+    for (i = 0; s[i + position] && s[i + position] != '\n'; i++) {
         buffer[i] = s[i + position];
         if (i >= buffer_size - 1) {
             buffer_size *= 2;
